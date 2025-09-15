@@ -7,6 +7,11 @@ import (
 	"github.com/user/editor/internal/editor"
 )
 
+/*
+Renderer handles terminal output using Ultraviolet's cell-based rendering.
+Converts editor state into visual representation with selection highlighting
+and cursor positioning using screen buffers for precise cell manipulation.
+*/
 type Renderer struct {
 	width  int
 	height int
@@ -24,7 +29,11 @@ func (r *Renderer) SetSize(width, height int) {
 	r.height = height
 }
 
-// Render returns the editor content as a styled string
+/*
+Render transforms editor state into terminal output. Creates viewport of visible
+lines, applies selection highlighting in visual mode, and adds block cursor for
+normal/visual modes. Uses Ultraviolet screen buffers for cell-level styling.
+*/
 func (r *Renderer) Render(ed *editor.Editor, scrollOffset int) string {
 	buffer := ed.GetBuffer()
 	cursor := ed.GetCursor()
@@ -74,7 +83,11 @@ func (r *Renderer) Render(ed *editor.Editor, scrollOffset int) string {
 	return content
 }
 
-// applySelection uses Ultraviolet to highlight the selection
+/*
+applySelection overlays reverse-video styling on selected text regions.
+Handles both single-line and multi-line selections by iterating through
+affected cells and applying style changes at the cell level.
+*/
 func (r *Renderer) applySelection(content string, sel editor.Selection, scrollOffset int) string {
 	// Create a screen buffer
 	area := uv.Rect(0, 0, r.width, r.height-2)
@@ -123,7 +136,11 @@ func (r *Renderer) applySelection(content string, sel editor.Selection, scrollOf
 	return scr.Render()
 }
 
-// applyCursor highlights the cursor position
+/*
+applyCursor renders block cursor for normal/visual modes by reversing the cell
+at cursor position. Insert/command modes use native terminal line cursor instead.
+Creates empty cell with space if cursor is beyond line content.
+*/
 func (r *Renderer) applyCursor(content string, cursor editor.Position, scrollOffset int, mode editor.Mode) string {
 	// Don't show block cursor in insert/command mode (they use line cursor)
 	if mode == editor.ModeInsert || mode == editor.ModeCommand {

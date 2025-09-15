@@ -1,5 +1,10 @@
 package editor
 
+/*
+Mode defines the editor's operational state. Each mode has distinct key bindings
+and behaviors, with explicit transitions managed through SetMode. Visual mode
+implements selection-first editing where selections precede operations.
+*/
 type Mode int
 
 const (

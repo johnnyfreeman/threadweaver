@@ -5,6 +5,11 @@ import (
 	"strings"
 )
 
+/*
+Buffer manages text content as a slice of lines, tracking modifications and file I/O.
+Line-based storage simplifies newline handling and line-oriented operations while
+maintaining reasonable performance for typical editing tasks.
+*/
 type Buffer struct {
 	lines    []string
 	filename string
@@ -64,6 +69,10 @@ func (b *Buffer) GetLine(n int) string {
 	return b.lines[n]
 }
 
+/*
+InsertChar inserts a single rune at the given position. Returns the new cursor position
+after insertion. Clamps column to line length to handle out-of-bounds positions gracefully.
+*/
 func (b *Buffer) InsertChar(pos Position, ch rune) Position {
 	if pos.Line >= len(b.lines) {
 		return pos
@@ -123,6 +132,11 @@ func (b *Buffer) DeleteChar(pos Position) Position {
 	return pos
 }
 
+/*
+DeleteSelection removes text within the selection range, handling both single-line
+and multi-line deletions. Merges partial lines when deleting across line boundaries.
+Returns cursor position at the start of the deleted range.
+*/
 func (b *Buffer) DeleteSelection(sel Selection) Position {
 	start, end := sel.Start(), sel.End()
 

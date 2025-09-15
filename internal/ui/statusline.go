@@ -7,6 +7,10 @@ import (
 	"github.com/user/editor/internal/editor"
 )
 
+/*
+Status line styles using Lipgloss for terminal coloring. Each mode gets distinct
+colors for visual feedback. Styles are pre-computed for performance.
+*/
 var (
 	statusStyle = lipgloss.NewStyle().
 			Background(lipgloss.Color("235")).
@@ -46,6 +50,11 @@ var (
 			Bold(true)
 )
 
+/*
+RenderStatusLine creates the bottom status bar showing mode, filename, and cursor position.
+Layouts components with mode indicator on left, filename center-left, and position on right.
+Highlights dirty state with color change and [+] indicator.
+*/
 func RenderStatusLine(width int, ed *editor.Editor) string {
 	mode := ed.GetMode()
 	buffer := ed.GetBuffer()

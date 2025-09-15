@@ -4,6 +4,11 @@ import (
 	"strings"
 )
 
+/*
+Editor coordinates the editing state, integrating buffer management, cursor control,
+selection handling, and mode switching. Acts as the central state machine for all
+editing operations, maintaining consistency between cursor, selection, and buffer state.
+*/
 type Editor struct {
 	buffer    *Buffer
 	cursor    Position
@@ -57,6 +62,11 @@ func (e *Editor) GetCommand() string {
 	return e.command
 }
 
+/*
+clampCursor ensures cursor stays within valid buffer bounds. In normal mode,
+cursor cannot move past the last character. In insert mode, cursor can be
+positioned after the last character for end-of-line insertion.
+*/
 func (e *Editor) clampCursor() {
 	if e.cursor.Line < 0 {
 		e.cursor.Line = 0
@@ -129,6 +139,11 @@ func (e *Editor) MoveToLineEnd() {
 	}
 }
 
+/*
+MoveWordForward implements word-wise forward navigation. Words are defined as
+contiguous alphanumeric characters plus underscore. Moves to next line if at
+end of current line. Updates selection in visual mode.
+*/
 func (e *Editor) MoveWordForward() {
 	line := e.buffer.GetLine(e.cursor.Line)
 	col := e.cursor.Col
@@ -312,6 +327,11 @@ func (e *Editor) ClearCommand() {
 	e.command = ""
 }
 
+/*
+ExecuteCommand processes command-line input. Returns true if the command
+requests editor termination. Implements basic vim-style commands for file
+operations and quitting.
+*/
 func (e *Editor) ExecuteCommand() bool {
 	cmd := strings.TrimSpace(e.command)
 	e.command = ""
